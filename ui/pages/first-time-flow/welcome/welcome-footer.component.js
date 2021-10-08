@@ -8,8 +8,9 @@ const WelcomeFooter = () => {
     <>
       <div className="welcome-page__header">{t('welcome')}</div>
       <div className="welcome-page__description">
-        <p>{t('metamaskDescription')}</p>
-        <p>{t('happyToSeeYou')}</p>
+        {/*<p>{t('metamaskDescription')}</p>
+        <p>{t('happyToSeeYou')}</p>*/}
+        <p style={{textAlign: 'center'}}>{t('passbirdDescription')}</p>
       </div>
     </>
   );

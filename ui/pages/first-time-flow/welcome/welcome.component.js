@@ -48,12 +48,28 @@ export default class Welcome extends PureComponent {
     return (
       <div className="welcome-page__wrapper">
         <div className="welcome-page">
-          <Mascot
+          {/*<Mascot
             animationEventEmitter={this.animationEventEmitter}
+            width="125"
+            height="125"
+          />*/}
+          <img
+            src="./images/streambird_logo.png"
+            alt=""
+            className="logo"
             width="125"
             height="125"
           />
           {isBeta() ? <BetaWelcomeFooter /> : <WelcomeFooter />}
+          <input
+            type="text"
+            className="add-to-address-book-modal__input"
+            placeholder={'jeff@streambird.io'}
+            // onChange={this.onChange}
+            // onKeyPress={this.onKeyPress}
+            // value={"this.state.alias"}
+            autoFocus
+          />
           <Button
             type="primary"
             className="first-time-flow__button"

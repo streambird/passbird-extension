@@ -1032,6 +1032,9 @@
   "happyToSeeYou": {
     "message": "We’re happy to see you."
   },
+  "passbirdDescription": {
+    "message": "Simply sign up with a magic link to start using decentralized applications."
+  },
   "hardware": {
     "message": "Hardware"
   },
@@ -2809,7 +2812,7 @@
     "description": "$1 is a clickable link."
   },
   "welcome": {
-    "message": "Welcome to MetaMask"
+    "message": "Welcome to Passbird"
   },
   "welcomeBack": {
     "message": "Welcome Back!"
