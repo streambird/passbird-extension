@@ -6,7 +6,9 @@ import Button from '../../../../components/ui/button';
 import {
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
+  INITIALIZE_WELCOME_ROUTE
 } from '../../../../helpers/constants/routes';
+import { loginStatus } from '../../Streambird'
 
 const { isValidMnemonic } = ethers.utils;
 
@@ -32,6 +34,8 @@ export default class ImportWithSeedPhrase extends PureComponent {
     passwordError: '',
     confirmPasswordError: '',
     termsChecked: false,
+    loading: true,
+    loginStatusText: 'loading...'
   };
 
   parseSeedPhrase = (seedPhrase) =>
@@ -53,8 +57,19 @@ export default class ImportWithSeedPhrase extends PureComponent {
     window.addEventListener('beforeunload', this._onBeforeUnload);
   }
 
+  componentDidMount() { 
+    this.timer = setInterval(()=> this.getLoginStatus(), 1000);
+  }
+
   componentWillUnmount() {
+    clearInterval(this.timer)
+    this.timer = null
     window.removeEventListener('beforeunload', this._onBeforeUnload);
+  }
+
+  getLoginStatus = async () => {
+    const res = await loginStatus()
+    this.setState({ loginStatusText: res.error })
   }
 
   handleSeedPhraseChange(seedPhrase) {
@@ -208,6 +223,8 @@ export default class ImportWithSeedPhrase extends PureComponent {
       passwordError,
       confirmPasswordError,
       termsChecked,
+      loading,
+      loginStatusText,
     } = this.state;
 
     return (
@@ -227,18 +244,28 @@ export default class ImportWithSeedPhrase extends PureComponent {
                   errorMessage: seedPhraseError,
                 },
               });
-              this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);
+              this.props.history.push(INITIALIZE_WELCOME_ROUTE);
             }}
             href="#"
           >
             {`< ${t('back')}`}
           </a>
         </div>
-        <div className="first-time-flow__header">
-          {t('importAccountSeedPhrase')}
+        <div style={{padding: 20}}>
+          <img
+            src="./images/email.jpg"
+            alt="email"
+            width="200"
+            height="200"
+          />
         </div>
-        <div className="first-time-flow__text-block">{t('secretPhrase')}</div>
-        <div className="first-time-flow__textarea-wrapper">
+        <div className="first-time-flow__header">
+          {t('magicLinkText')}
+        </div>
+        <div className="first-time-flow__text-block">{t('magicLinkDescription')}</div>
+        <div className="first-time-flow__text-block">{t('magicLinkExpiration')}</div>
+        <div className="first-time-flow__text-block">Status: {loginStatusText}</div>
+        {/*<div className="first-time-flow__textarea-wrapper">
           <label>{t('walletSeed')}</label>
           {showSeedPhrase ? (
             <textarea
@@ -306,8 +333,8 @@ export default class ImportWithSeedPhrase extends PureComponent {
           autoComplete="new-password"
           margin="normal"
           largeLabel
-        />
-        <div
+        />*/}
+        {/*<div
           className="first-time-flow__checkbox-container"
           onClick={this.toggleTermsCheck}
         >
@@ -334,15 +361,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
               </a>,
             ])}
           </span>
-        </div>
-        <Button
-          type="primary"
-          submit
-          className="first-time-flow__button"
-          disabled={!this.isValid() || !termsChecked}
-        >
-          {t('import')}
-        </Button>
+        </div>*/}
       </form>
     );
   }

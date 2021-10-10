@@ -1096,6 +1096,15 @@
   "importAccountSeedPhrase": {
     "message": "Import a wallet with Secret Recovery Phrase"
   },
+  "magicLinkText": {
+    "message": "An email is on its way!"
+  },
+  "magicLinkDescription": {
+    "message": "We sent you an email. Open it on your computer or phone to be logged in to Passbird."
+  },
+  "magicLinkExpiration": {
+    "message": "The link expires in 24 hours."
+  },
   "importAccountText": {
     "message": "or $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"

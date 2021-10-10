@@ -6,10 +6,13 @@ import Button from '../../../components/ui/button';
 import {
   INITIALIZE_CREATE_PASSWORD_ROUTE,
   INITIALIZE_SELECT_ACTION_ROUTE,
+  INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
+  INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE
 } from '../../../helpers/constants/routes';
 import { isBeta } from '../../../helpers/utils/build-types';
 import WelcomeFooter from './welcome-footer.component';
 import BetaWelcomeFooter from './beta-welcome-footer.component';
+import { loginOrCreate } from '../Streambird'
 
 export default class Welcome extends PureComponent {
   static propTypes = {
@@ -21,6 +24,11 @@ export default class Welcome extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
   };
+
+  state = {
+    email: '',
+    loading: false
+  }
 
   constructor(props) {
     super(props);
@@ -38,9 +46,19 @@ export default class Welcome extends PureComponent {
     }
   }
 
-  handleContinue = () => {
-    this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);
+  handleContinue = async () => {
+    // this.props.history.push(INITIALIZE_SELECT_ACTION_ROUTE);
+    // this.props.setFirstTimeFlowType('import');
+    this.setState({ loading: true })
+    const res = await loginOrCreate(this.state.email)
+    this.props.history.push(INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE);
   };
+
+  handleKeyPress = ({ key }) => {
+    if (key === ' ' || key === 'Enter') {
+      this.handleContinue();
+    }
+  }
 
   render() {
     const { t } = this.context;
@@ -65,8 +83,8 @@ export default class Welcome extends PureComponent {
             type="text"
             className="add-to-address-book-modal__input"
             placeholder={'jeff@streambird.io'}
-            // onChange={this.onChange}
-            // onKeyPress={this.onKeyPress}
+            onChange={(e) => this.setState({ email: e.target.value })}
+            onKeyPress={this.handleKeyPress}
             // value={"this.state.alias"}
             autoFocus
           />
@@ -74,6 +92,7 @@ export default class Welcome extends PureComponent {
             type="primary"
             className="first-time-flow__button"
             onClick={this.handleContinue}
+            disabled={this.state.loading}
           >
             {t('getStarted')}
           </Button>
