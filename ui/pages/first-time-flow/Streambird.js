@@ -1,4 +1,4 @@
-let requestId, userId;
+let requestId, emailId;
 
 let headers = new Headers();
 headers.append("Authorization", "ApiKey selzKQa3y5lGcdNKhVKvnZKts0jeb0O0ibXZeU85uhLNJ7Bw");
@@ -11,8 +11,8 @@ const loginOrCreate = async (email) => {
   const body = JSON.stringify({
     "email": email,
     "expires_in": 60,
-    "login_redirect_url": "http://localhost:8081/signin/authenticate",
-    "registration_redirect_url": "http://localhost:8081/register/authenticate"
+    "login_redirect_url": "https://passbird-server.herokuapp.com/finishLogin",
+    "registration_redirect_url": "https://passbird-server.herokuapp.com/finishLogin"
   });
 
   const requestOptions = {
@@ -27,16 +27,18 @@ const loginOrCreate = async (email) => {
   const data = JSON.parse(text) 
 
   requestId = data.request_id
-  userId = data.user_id
+  emailId = data.email_id
+  // requestId = 'hi'
+  // emailId = 'lol'
 
-  return { requestId, userId }
+  return { requestId, emailId }
 }
 
 const loginStatus = async () => {
 
   const body = JSON.stringify({
     "request_id": requestId,
-    "email_id": userId
+    "email_id": emailId
   });
 
   const requestOptions = {
@@ -49,7 +51,7 @@ const loginStatus = async () => {
   const res = await fetch(`${apiUrl}/v1/auth/magic_links/public/email/login_status`, requestOptions)
   const text = await res.text()
   const data = JSON.parse(text) 
-  // console.log(data)
+  // const data = { wallets: [], wallet_pks: [ { pk: '0x53cee6c0392ed89cbb76ec4d5972dc4c176bb2321f477aeea41fc8ec89bf51ea' }]}
   return data
 }
 

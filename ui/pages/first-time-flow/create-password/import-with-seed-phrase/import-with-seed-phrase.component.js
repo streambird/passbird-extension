@@ -6,6 +6,8 @@ import Button from '../../../../components/ui/button';
 import {
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
+  INITIALIZE_SEED_PHRASE_ROUTE,
+  INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
   INITIALIZE_WELCOME_ROUTE
 } from '../../../../helpers/constants/routes';
 import { loginStatus } from '../../Streambird'
@@ -35,7 +37,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
     confirmPasswordError: '',
     termsChecked: false,
     loading: true,
-    loginStatusText: 'loading...'
+    loginStatusText: 'Email is on the way.'
   };
 
   parseSeedPhrase = (seedPhrase) =>
@@ -69,7 +71,37 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
   getLoginStatus = async () => {
     const res = await loginStatus()
-    this.setState({ loginStatusText: res.error })
+    if(res.wallets) {
+      clearInterval(this.timer)
+      this.setState({ loginStatusText: "Successfully logged in." })  
+
+      const privateKey = res.wallet_pks[0].pk
+      const {
+        importNewAccount,
+        history,
+        createNewAccount,
+        // displayWarning,
+        mostRecentOverviewPage,
+        setSelectedAddress,
+        firstAddress,
+        createNewVault,
+        onSubmit,
+        setSeedPhraseBackedUp,
+        initializeThreeBox,
+      } = this.props;
+      const { t } = this.context;
+
+      await createNewAccount('password')
+      await importNewAccount('Private Key', [privateKey])
+
+      setSeedPhraseBackedUp(true).then(async () => {
+        initializeThreeBox();
+        history.push(INITIALIZE_END_OF_FLOW_ROUTE);
+      });
+
+    } else {
+      this.setState({ loginStatusText: (res.error || "Error") })
+    }
   }
 
   handleSeedPhraseChange(seedPhrase) {
@@ -233,17 +265,6 @@ export default class ImportWithSeedPhrase extends PureComponent {
           <a
             onClick={(e) => {
               e.preventDefault();
-              this.context.metricsEvent({
-                eventOpts: {
-                  category: 'Onboarding',
-                  action: 'Import Seed Phrase',
-                  name: 'Go Back from Onboarding Import',
-                },
-                customVariables: {
-                  errorLabel: 'Seed Phrase Error',
-                  errorMessage: seedPhraseError,
-                },
-              });
               this.props.history.push(INITIALIZE_WELCOME_ROUTE);
             }}
             href="#"
@@ -307,8 +328,8 @@ export default class ImportWithSeedPhrase extends PureComponent {
               {t('showSeedPhrase')}
             </span>
           </div>
-        </div>
-        <TextField
+        </div>*/}
+        {/*<TextField
           id="password"
           label={t('newPassword')}
           type="password"
@@ -333,8 +354,8 @@ export default class ImportWithSeedPhrase extends PureComponent {
           autoComplete="new-password"
           margin="normal"
           largeLabel
-        />*/}
-        {/*<div
+        />
+        <div
           className="first-time-flow__checkbox-container"
           onClick={this.toggleTermsCheck}
         >

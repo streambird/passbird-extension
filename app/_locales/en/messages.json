@@ -1103,7 +1103,7 @@
     "message": "We sent you an email. Open it on your computer or phone to be logged in to Passbird."
   },
   "magicLinkExpiration": {
-    "message": "The link expires in 24 hours."
+    "message": "The link expires in an hour."
   },
   "importAccountText": {
     "message": "or $1",
